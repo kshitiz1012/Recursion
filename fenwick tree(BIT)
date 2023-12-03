@@ -1,0 +1,80 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+#define ll long long
+#define ld long double
+#define endl "\n"
+#define yes cout<<"YES"<<endl
+#define no  cout<<"NO"<<endl
+const int N=2e5+10;
+ll a[N],BITree[N];
+// a[0..n-1]
+// BITree[0..n]
+ll getSum(ll index) 
+{ 
+    ll sum = 0;
+    index = index + 1; 
+    while (index>0) 
+    { 
+        sum += BITree[index]; 
+        index -= index & (-index); 
+    } 
+    
+    return sum; 
+} 
+void updateBIT(ll n,ll index,ll val) 
+{ 
+    index = index + 1; 
+    while (index <= n) 
+    { 
+       BITree[index] += val; 
+       index += index & (-index); 
+    }
+} 
+void constructBITree(ll n) 
+{ 
+    for (int i=1; i<=n; i++) 
+        BITree[i] = 0; 
+
+    for (int i=0; i<n; i++) 
+        updateBIT(n, i, a[i]); 
+} 
+void solve()
+{
+    ll n,q;
+    cin>>n>>q;
+    for(int i=0;i<n;i++)
+    {
+         ll p;
+         cin>>p;
+         a[i]=p;
+    }
+    
+    constructBITree(n);
+    while(q--)
+    {
+         ll type;
+         cin>>type;
+         
+         if(type==2)
+         {
+            ll l,r;
+            cin>>l>>r;
+            l--,r--;
+            cout<<getSum(r)-getSum(l-1)<<endl;
+         }
+         else
+         {
+              ll indx,x;
+              cin>>indx>>x;
+              indx--;
+              ll e=x-a[indx];
+              a[indx]=x;
+              updateBIT(n,indx,e);
+         }
+    }
+}
+int main()
+{
+	solve();
+}
